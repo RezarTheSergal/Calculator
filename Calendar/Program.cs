@@ -4,10 +4,36 @@ using System.Runtime.CompilerServices;
 
 namespace Calendar
 {
-    struct Week()
+    public struct Info()
     {
         public static string WeekDay = "Будний";
         public static string WeekEnd = "Выходной";
+    }
+    public struct Day
+    {
+        public Day(string day, string stat) 
+        {
+            Name = day;
+            Stat = stat;
+        }
+        public string Name { get; }
+        public string Stat { get; }
+    }
+    public class Week
+    {
+        public readonly Day[] days = new Day[7];
+
+
+        public Week() 
+        {
+            days[0] = new Day("Monday", Info.WeekDay);
+            days[1] = new Day("Tuesday", Info.WeekDay);
+            days[2] = new Day("Wednesday", Info.WeekDay);
+            days[3] = new Day("Thursday", Info.WeekDay);
+            days[4] = new Day("Friday", Info.WeekDay);
+            days[5] = new Day("Saturday", Info.WeekEnd);
+            days[6] = new Day("Sunday", Info.WeekEnd);
+        }
     }
 
     internal class Program
@@ -20,6 +46,7 @@ namespace Calendar
         }
         static void Main(string[] args)
         {
+            Week week = new Week();
             while (true)
             {
                 Console.WriteLine("Введите день недели с которого начинается месяц 1(пн) - 7(вс)");
@@ -33,7 +60,7 @@ namespace Calendar
                     Console.Write("Введите день месяца: ");
                     if (int.TryParse(Console.ReadLine(), out int number))
                     {
-                        if (number > 31)
+                        if (number > 31 || number < 1)
                         {
                             Console.WriteLine("Ошибка: В мае 31 день");
                             continue;
@@ -41,7 +68,7 @@ namespace Calendar
 
                         if (number <= 5 || (number >= 8 && number <= 10))
                         {
-                            Console.WriteLine(Week.WeekEnd);
+                            Console.WriteLine(Info.WeekEnd);
                             continue;
                         }
 
@@ -50,8 +77,8 @@ namespace Calendar
                         int year = dateTime.Year;
                         while (!flag)
                         {
-                            Console.WriteLine($"{(int)dateTime.DayOfWeek} {dateTime.Year}");
-                            if ((int)dateTime.DayOfWeek == day)
+                            Console.WriteLine($"{dateTime.DayOfWeek} {week.days[day-1].Name} {dateTime.Year}");
+                            if (dateTime.DayOfWeek.ToString().Equals(week.days[day-1].Name))
                             {
                                 flag = true;
                             }
@@ -63,7 +90,7 @@ namespace Calendar
 
                         }
                         dateTime = new(year, 5, number);
-                        Console.WriteLine($"{(IsWeekend(dateTime) ? Week.WeekEnd : Week.WeekDay)} {dateTime.DayOfWeek}");
+                        Console.WriteLine($"{(IsWeekend(dateTime) ? Info.WeekEnd : Info.WeekDay)} {dateTime.DayOfWeek}");
                     }
                 }
             }
